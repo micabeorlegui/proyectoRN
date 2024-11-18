@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, Image} from 'react-native';
 import {db, auth} from '../firebase/config';
 
 
@@ -60,40 +60,43 @@ onSubmit(){
    render () {
        return(
         <View style={styles.container}>
-            <Text style={styles.register}>Registro</Text>
+            <Image source={require('../../assets/img/background.jpeg')} style={styles.backgroundImage}/>
+            <View style={styles.content}>
+                <Text style={styles.register}>Registro</Text>
 
-            <TextInput style={styles.field} 
-                keyboardType='email-address'
-                placeholder='Ingrese su email'
-                onChangeText={ text => this.setState({email:text}) }
-                value={this.state.email} />
+                <TextInput style={styles.field} 
+                    keyboardType='email-address'
+                    placeholder='Ingrese su email'
+                    onChangeText={ text => this.setState({email:text}) }
+                    value={this.state.email} />
 
-            <TextInput style={styles.field} 
-                keyboardType='default'
-                placeholder='Ingrese su nombre de usuario'
-                onChangeText={ text => this.setState({username:text}) }
-                value={this.state.username} />
+                <TextInput style={styles.field} 
+                    keyboardType='default'
+                    placeholder='Ingrese su nombre de usuario'
+                    onChangeText={ text => this.setState({username:text}) }
+                    value={this.state.username} />
 
-            <TextInput style={styles.field} 
-                keyboardType='default'
-                placeholder='Ingrese su contraseña'
-                secureTextEntry={true} 
-                onChangeText={ text => this.setState({password:text}) }
-                value={this.state.password}/> 
-            
-            {this.state.errores.length > 0 && (
-                <View style={styles.errorContainer}>{this.state.errores.map((error, index) => (
-                    <Text key={index} style={styles.error}>{error}</Text>))}
-                </View>
-            )}
+                <TextInput style={styles.field} 
+                    keyboardType='default'
+                    placeholder='Ingrese su contraseña'
+                    secureTextEntry={true} 
+                    onChangeText={ text => this.setState({password:text}) }
+                    value={this.state.password}/> 
 
-            <TouchableOpacity style={styles.botonRegistro} onPress={() => this.onSubmit()}>
-                <Text style={styles.textoCentro}> Registrar </Text> 
-            </TouchableOpacity> 
+                {this.state.errores.length > 0 && (
+                    <View style={styles.errorContainer}>{this.state.errores.map((error, index) => (
+                        <Text key={index} style={styles.error}>{error}</Text>))}
+                    </View>
+                )}
 
-            <TouchableOpacity style={styles.ingresar} onPress={ ()=> this.props.navigation.navigate('Login')}>
-                <Text style={styles.textoCentro}>Ya tengo cuenta</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.botonRegistro} onPress={() => this.onSubmit()}>
+                    <Text style={styles.textoCentro}> Registrar </Text> 
+                </TouchableOpacity> 
+
+                <TouchableOpacity style={styles.yaTengoCuenta} onPress={ ()=> this.props.navigation.navigate('Login')}>
+                    <Text style={styles.textoCentro}>Ya tengo cuenta</Text>
+                </TouchableOpacity>
+            </View>
         </View>
        )
    }
@@ -107,32 +110,64 @@ const styles = StyleSheet.create({
       flex: 1,
       padding: 20
     },
+    backgroundImage:{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+    },
+    content:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20
+    },
     register:{
         fontWeight:'bold',
         lineHeight:40,
-        fontSize:20
-    },
-    ingresar:{
-        backgroundColor:'rgb(255,165,0)',
-        padding:8,
-        marginBottom:10,
-        marginTop:10,
-        borderRadius:10
+        fontSize:24,
+        marginBottom: 25,
+        color:'#481E14'
     },
     botonRegistro:{
-        backgroundColor:'rgb(155,155,155)',
-        width:'25%',
+        backgroundColor:'#A67B5B',
+        width:'50%',
         borderRadius:10,
-        paddin:5
+        padding:4,
+        marginTop:20
+    },
+    yaTengoCuenta:{
+        backgroundColor:'#B99470',
+        width:'60%',
+        borderRadius:10,
+        padding:4,
+        marginTop:20
     },
     textoCentro:{
         textAlign:'center'
     },
     field:{
-        borderWidth:1,
-        borderColor:'rgb(155,155,155)',
-        marginBottom:10,
-        paddingLeft:10
+        width: '100%',
+        height: 35,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10,
+        marginBottom: 15,
+        paddingLeft: 15,
+        backgroundColor: '#FBFBFB',
+        fontSize: 14,
+        shadowColor:"#000",
+        shadowOffset:{
+            width:0,
+            height:2
+        },
+        shadowOpacity:0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     error: {
         color: "red",
