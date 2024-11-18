@@ -11,7 +11,7 @@ class Register extends Component{
             username:'',
             password:'',
             registered: false,
-            error:''
+            errores:[]
        }
    }
 
@@ -25,26 +25,23 @@ class Register extends Component{
 
 onSubmit(){
 
+    let errores= []
+    if (this.state.email==='' || this.state.password==='' || this.state.username==='' ) {
+        errores.push('Todos los campos deben ser completados.')
+    }
+
+    if (!this.state.email.includes("@")) {
+        errores.push("El email debe contener un '@'.");
+    }
+
+    if (this.state.password.length<6) {
+        errores.push("La contraseña debe tener al menos 6 caracteres.");
+    }
+
+    this.setState({ errores });
+
     auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(response=>{
-            if (this.state.email==='' || this.state.password==='' || this.state.username==='' ) {
-                this.setState({error: 'Todos los campos deben ser completados.'})
-                console.log(this.state.error)
-                return
-            }
-            
-            if (!this.state.email.includes('@')) {
-                this.setState({error: 'Email mal formateado'})
-                console.log(this.state.error)
-                return
-            }
-        
-            if (this.state.password.length<6) {
-                this.setState({error: 'La password debe tener una longitud mínima de 6 caracteres'})
-                console.log(this.state.error)
-                return
-            }
-
             this.setState({registered: true})
 
             db.collection('users').add({
@@ -83,6 +80,12 @@ onSubmit(){
                 secureTextEntry={true} 
                 onChangeText={ text => this.setState({password:text}) }
                 value={this.state.password}/> 
+            
+            {this.state.errores.length > 0 && (
+                <View style={styles.errorContainer}>{this.state.errores.map((error, index) => (
+                    <Text key={index} style={styles.error}>{error}</Text>))}
+                </View>
+            )}
 
             <TouchableOpacity style={styles.botonRegistro} onPress={() => this.onSubmit()}>
                 <Text style={styles.textoCentro}> Registrar </Text> 
@@ -130,6 +133,11 @@ const styles = StyleSheet.create({
         borderColor:'rgb(155,155,155)',
         marginBottom:10,
         paddingLeft:10
+    },
+    error: {
+        color: "red",
+        marginBottom: 10,
+        textAlign: "center",
     }
   });
 
