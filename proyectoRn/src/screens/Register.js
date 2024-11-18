@@ -11,6 +11,7 @@ class Register extends Component{
             username:'',
             password:'',
             registered: false,
+            error:'',
             errores:[]
        }
    }
@@ -18,44 +19,49 @@ class Register extends Component{
    componentDidMount(){
     auth.onAuthStateChanged(user=>{
         if (user) {
-            this.props.navigation.navigate('HomeMenu') 
+            this.props.navigation.navigate('Login') 
         }
     })
-}
-
-onSubmit(){
-
-    let errores= []
-    if (this.state.email==='' || this.state.password==='' || this.state.username==='' ) {
-        errores.push('Todos los campos deben ser completados.')
     }
 
-    if (!this.state.email.includes("@")) {
-        errores.push("El email debe contener un '@'.");
-    }
+    onSubmit(){
 
-    if (this.state.password.length<6) {
-        errores.push("La contraseña debe tener al menos 6 caracteres.");
-    }
+        let errores= []
+        if (this.state.email==='' || this.state.password==='' || this.state.username==='' ) {
+            errores.push('Todos los campos deben ser completados.')
+        }
 
-    this.setState({ errores });
+        if (!this.state.email.includes("@")) {
+            errores.push("El email debe contener un '@'.");
+        }
 
-    auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
-        .then(response=>{
-            this.setState({registered: true})
+        if (this.state.password.length<6) {
+            errores.push("La contraseña debe tener al menos 6 caracteres.");
+        }
 
-            db.collection('users').add({
-                owner: auth.currentUser.email,
-                email: this.state.email,
-                userName:this.state.username,
-                createdAt: Date.now()
+        if (errores.length > 0) {
+            this.setState({ errores });
+            return;
+        }
+
+        this.setState({ errores });
+
+        auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
+            .then(response=>{
+                this.setState({registered: true})
+
+                db.collection('users').add({
+                    owner: auth.currentUser.email,
+                    email: this.state.email,
+                    userName:this.state.username,
+                    createdAt: Date.now()
+                })
             })
-        })
-        .then(()=> this.props.navigation.navigate('Login'))
-        .catch(error=>{
-            this.setState({error:'Fallo en el regitro.'})
-        })
-}
+            .then(()=> this.props.navigation.navigate('Login'))
+            .catch(error=>{
+                this.setState({error:'Fallo en el regitro.'})
+            })
+    }
 
    render () {
        return(
@@ -83,11 +89,13 @@ onSubmit(){
                     onChangeText={ text => this.setState({password:text}) }
                     value={this.state.password}/> 
 
-                {this.state.errores.length > 0 && (
-                    <View style={styles.errorContainer}>{this.state.errores.map((error, index) => (
+                {this.state.errores.length > 0 ? (
+                    <View>{this.state.errores.map((error, index) => (
                         <Text key={index} style={styles.error}>{error}</Text>))}
                     </View>
-                )}
+                ) : (null) }
+
+                {!this.state.error==='' ? (<Text style={styles.error}>{this.state.error}</Text>):(null)}
 
                 <TouchableOpacity style={styles.botonRegistro} onPress={() => this.onSubmit()}>
                     <Text style={styles.textoCentro}> Registrar </Text> 

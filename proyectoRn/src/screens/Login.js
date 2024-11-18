@@ -11,6 +11,7 @@ class Login extends Component{
         password: "",
         logued: false,
         errores: [],
+        error:''
        }
    }
 
@@ -38,12 +39,14 @@ class Login extends Component{
       .then( ()=>  this.props.navigation.navigate("HomeMenu"))
       .catch((error) => this.setState({ error: "Fallo el login" }));    
   }
+  
    render () {
        return(
         <View style={styles.container}>
             <Image source={require('../../assets/img/background.jpeg')} style={styles.backgroundImage}/>
             <View style={styles.content}>
                 <Text style={styles.login}>Ingresar</Text>
+
                 <TextInput
                     style={styles.field} 
                     keyboardType="email-address"
@@ -51,6 +54,7 @@ class Login extends Component{
                     onChangeText={(text) => this.setState({ email: text })}
                     value={this.state.email}
                 />
+
                 <TextInput
                     style={styles.field} 
                     placeholder="Ingrese su contrasena"
@@ -58,19 +62,21 @@ class Login extends Component{
                     onChangeText={(text) => this.setState({ password: text })}
                     value={this.state.password}
                 />
+
+                {this.state.errores.length > 0 ? (
+                    <View>{this.state.errores.map((error, index) => (
+                        <Text key={index} style={styles.error}>{error}</Text>))}
+                    </View>
+                ) : (null) }
+
+                {!this.state.error==='' ? (<Text style={styles.error}>{this.state.error}</Text>):(null)}
+
                 <TouchableOpacity onPress={() => this.handleSubmit() }  style={styles.botonLogin}>
-                <Text style={styles.textoCentro}>Acceder</Text>
-                {this.state.errores.length > 0 && (
-                        <View style={styles.errorContainer}>{this.state.errores.map((error, index) => (
-                            <Text key={index} style={styles.error}>{error}</Text>))}
-                        </View>
-                )}
+                    <Text style={styles.textoCentro}>Acceder</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate("Register")}
-                    style={styles.noTengoCuenta}
-                >
-                <Text style={styles.textoCentro}>No tengo cuenta</Text>
+
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("Register")} style={styles.noTengoCuenta}>
+                    <Text style={styles.textoCentro}>No tengo cuenta</Text>
                 </TouchableOpacity>
                 
             </View>    

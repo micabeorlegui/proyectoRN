@@ -13,26 +13,26 @@ const HomeMenu= (props) => {
         <Tab.Navigator >
         
           <Tab.Screen 
-            options={{tabBarIcon: () => <FontAwesome name="home" size={24} color="black" />, headerShown:false}}
             name="Home" 
             component={Home}
+            options={{tabBarIcon: () => <FontAwesome name="home" size={24} color="black" />, headerShown:false}}
           />
 
           <Tab.Screen  
-            options={{tabBarIcon: () => <MaterialIcons name="post-add" size={24} color="black" />, headerShown:false}}
             name="NewPost" 
             component={NewPost} 
+            options={{tabBarIcon: () => <MaterialIcons name="post-add" size={24} color="black" />, headerShown:false}}
           />
 
           <Tab.Screen  
-            options={{tabBarIcon: () => <MaterialIcons name="account-circle" size={24} color="black" />, headerShown: false }}
             name="Profile" 
             component={Profile} 
+            options={{tabBarIcon: () => <MaterialIcons name="account-circle" size={24} color="black" />, headerShown: false }}
           />
           <Tab.Screen
-            options={{tabBarIcon: () => <FontAwesome name="users" size={24} color="black" />, headerShown:false}}
             name="Usuarios" 
             component={Users} 
+            options={{tabBarIcon: () => <FontAwesome name="users" size={24} color="black" />, headerShown:false}}
           />
         
       </Tab.Navigator>
