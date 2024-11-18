@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, Image} from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, FlatList, Image} from 'react-native';
 import {db, auth} from '../firebase/config';
 import User from "../components/User";
 
@@ -10,18 +10,15 @@ class Users extends Component{
        this.state={
             query: "",
             resultados:[],
-            error:'',
             noResultados:''
        }
    }
 
     onSubmit(){
-        if (!this.state.query.includes("@")) {
-            this.setState({ error:"El email debe contener un '@'." });
-            return;
-        }
 
-        db.collection('users').where('email', '==', this.state.query).onSnapshot(
+        db.collection('users')
+        .where('email', '==', this.state.query)
+        .onSnapshot(
             docs => {
                 if (docs.empty) {
                     this.setState({noResultados: 'El email ingresado no existe'})
@@ -31,9 +28,9 @@ class Users extends Component{
                         resultados.push({id:doc.id, data: doc.data()})
                     })
 
-                    this.setState({resultados:resultados})
+                    this.setState({resultados:resultados, noResultados: ''})
                 }
-        })
+            })
     }
 
     render() {
@@ -120,11 +117,6 @@ field:{
     shadowRadius: 3.84,
     elevation: 5,
 },
-error: {
-    color: "red",
-    marginBottom: 10,
-    textAlign: "center",
-}
 });
 
 export default Users

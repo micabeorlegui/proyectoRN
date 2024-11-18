@@ -25,8 +25,8 @@ class Register extends Component{
     }
 
     onSubmit(){
-
         let errores= []
+
         if (this.state.email==='' || this.state.password==='' || this.state.username==='' ) {
             errores.push('Todos los campos deben ser completados.')
         }
@@ -39,12 +39,7 @@ class Register extends Component{
             errores.push("La contraseña debe tener al menos 6 caracteres.");
         }
 
-        if (errores.length > 0) {
-            this.setState({ errores });
-            return;
-        }
-
-        this.setState({ errores });
+        this.setState({ errores: errores });
 
         auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
             .then(response=>{
