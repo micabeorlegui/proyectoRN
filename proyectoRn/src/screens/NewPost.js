@@ -12,43 +12,43 @@ class NewPost extends Component{
           errores: []
         }
     }  
-    crearPosteo(mensaje,likes ) {
-    let errores= []
-    if(mensaje ===""){
-        errores.push('No podes crear postes vacios')
-        this.setState({ errores });
-        return
-    }else{
-        db.collection('posts').add({
-            owner: auth.currentUser.email,
-            createdAt:Date.now(),
-            mensaje: mensaje,
-            likes: []
-        })
-        .then( this.props.navigation.navigate("Home"))
-        .catch(err => console.log(err))
 
+    crearPosteo(mensaje,likes ) {
+        let errores= []
+        if(mensaje ===""){
+            errores.push('No podes crear postes vacios')
+            this.setState({ errores });
+            return
+        }else{
+            db.collection('posts').add({
+                owner: auth.currentUser.email,
+                createdAt:Date.now(),
+                mensaje: mensaje,
+                likes: []
+            })
+            .then( this.props.navigation.navigate("Home"))
+            .catch(err => console.log(err))
+
+        }   
     }
     
-        
-    
-}
     render() {
         return (
           <View style={styles.container}>
              <Image source={require('../../assets/img/background.jpeg')} style={styles.backgroundImage}/>
              <View style={styles.content}>
                 <Text style={styles.nuevoPosteo}>Nuevo Posteo</Text>
-                    <TextInput 
-                        style={styles.field} 
-                        placeholder='Mensaje'
-                        onChangeText={ (text) => this.setState({mensaje:text}) }
-                        value={this.state.mensaje} />
-                <TouchableOpacity
-                    style={styles.boton}
-                    onPress={() => this.crearPosteo(this.state.mensaje)}>
+                
+                <TextInput 
+                    style={styles.field} 
+                    placeholder='Escribir...'
+                    onChangeText={ (text) => this.setState({mensaje:text}) }
+                    value={this.state.mensaje} />
+                
+                <TouchableOpacity style={styles.boton} onPress={() => this.crearPosteo(this.state.mensaje)}>
                     <Text style={styles.textoCentro}>Crear posteo</Text>
                 </TouchableOpacity>
+
                 {this.state.errores.length > 0 ? (
                     <View>{this.state.errores.map((error, index) => (
                         <Text key={index} style={styles.error}>{error}</Text>))}
