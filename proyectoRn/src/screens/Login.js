@@ -11,51 +11,50 @@ class Login extends Component{
         password: "",
         logued: false,
         errores: [],
+        errores2: [],
         error:''
        }
    }
 
    componentDidMount(){
-    auth.onAuthStateChanged( user => {
-      if(user){
-        this.props.navigation.navigate('HomeMenu')
-      }
-    })
+        auth.onAuthStateChanged( user => {
+            if(user){
+                this.props.navigation.navigate('HomeMenu')
+            }
+        })
   }
 
    handleSubmit() { 
-    let errores= []
-    db.collection('users').where('email', '==', this.state.email).onSnapshot(
-        docs => {
-            if (docs.empty) {
-                this.setState({
-                    errores: ['El email no está registrado. Por favor, regístrate.'],
-                    error: ''
-                });
-            } else{
-                    if (docs.password !== this.state.password) {
-                        this.setState({
-                            errores: ['La contraseña es incorrecta'],
-                            error: ''
-                        });
-                    }
-                }
+        let errores= []
+
+        if (this.state.email==='' || this.state.password==='' ) {
+            errores.push('Todos los campos deben ser completados.')
         }
-    )
-    
-    if (this.state.email==='' || this.state.password==='' ) {
-        errores.push('Todos los campos deben ser completados.')
+
+        if (!this.state.email.includes("@")) {
+            errores.push("Atención. Recorda que un email debe incluir '@'.");
+        }
+
+        this.setState({ errores });
+
+        db.collection('users').where('email', '==', this.state.email).onSnapshot(
+            docs => {
+                if (docs.empty) {
+                    this.setState({ errores2: "El email no está registrado. Por favor, regístrate."});
+                }
+                
+                if(!docs.empty && docs.password !== this.state.password) {
+                    this.setState({ errores2: "La contraseña es incorrecta."});
+                }
+            }
+        )
+
+        auth
+        .signInWithEmailAndPassword(this.state.email, this.state.password)
+        .then((response) => this.setState({ logued: true,  errores: [] }))
+        .then( ()=>  this.props.navigation.navigate("HomeMenu"))
+        .catch((error) => this.setState({ error: "Fallo el login" }));    
     }
-
-
-    this.setState({ errores });
-
-    auth
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then((response) => this.setState({ logued: true,  errores: [] }))
-      .then( ()=>  this.props.navigation.navigate("HomeMenu"))
-      .catch((error) => this.setState({ error: "Fallo el login" }));    
-  }
   
    render () {
        return(
@@ -84,6 +83,10 @@ class Login extends Component{
                     <View>{this.state.errores.map((error, index) => (
                         <Text key={index} style={styles.error}>{error}</Text>))}
                     </View>
+                ) : (null) }
+
+                {this.state.errores2.length > 0 ? (
+                    <Text style={styles.error}>{this.state.errores2}</Text>
                 ) : (null) }
 
                 {!this.state.error==='' ? (<Text style={styles.error}>{this.state.error}</Text>):(null)}
