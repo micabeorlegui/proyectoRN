@@ -25,6 +25,23 @@ class Login extends Component{
 
    handleSubmit() { 
     let errores= []
+    db.collection('users').where('email', '==', this.state.email).onSnapshot(
+        docs => {
+            if (docs.empty) {
+                this.setState({
+                    errores: ['El email no está registrado. Por favor, regístrate.'],
+                    error: ''
+                });
+            } else{
+                    if (docs.password !== this.state.password) {
+                        this.setState({
+                            errores: ['La contraseña es incorrecta'],
+                            error: ''
+                        });
+                    }
+                }
+        }
+    )
     
     if (this.state.email==='' || this.state.password==='' ) {
         errores.push('Todos los campos deben ser completados.')
