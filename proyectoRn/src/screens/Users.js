@@ -9,28 +9,31 @@ class Users extends Component{
        super();
        this.state={
             query: "",
+            users:[],
             resultados:[],
-            noResultados:''
        }
    }
 
-    onSubmit(){
-
+    componentDidMount(){
         db.collection('users')
-        .where('email', '==', this.state.query)
         .onSnapshot(
             docs => {
-                if (docs.empty) {
-                    this.setState({noResultados: 'El email ingresado no existe'})
-                }else{
-                    const resultados = [];
-                    docs.forEach(doc => {
-                        resultados.push({id:doc.id, data: doc.data()})
-                    })
+                const users = [];
+                docs.forEach(doc => {
+                    users.push({id:doc.id, data: doc.data()})
+                })
+                this.setState({users:users, resultados: users})
+            }
+        )
+    }
 
-                    this.setState({resultados:resultados, noResultados: ''})
-                }
-            })
+    handleSearch = (text) => {
+        this.setState({ query: text }, () => this.handleFilter());
+    }
+
+    handleFilter(){
+        const filteredUsers = this.state.users.filter((user) =>user.data.userName.toLowerCase().includes(this.state.query.toLowerCase()));
+        this.setState({ resultados: filteredUsers });
     }
 
     render() {
@@ -38,18 +41,12 @@ class Users extends Component{
             <View style={styles.container}>
                 <Image source={require('../../assets/img/background.jpeg')} style={styles.backgroundImage}/>
                 <View style={styles.content}>
+                    <Text style={styles.titulo}>Filtrado de usuarios</Text>
+
                     <TextInput style={styles.field} 
-                        keyboardType='email-address'
-                        placeholder='Buscar usuario por email...'
-                        onChangeText={ text => this.setState({query:text}) }
+                        placeholder='Filtrar por nombre de usuario...'
+                        onChangeText={this.handleSearch}
                         value={this.state.query} />
-
-                    <TouchableOpacity style={styles.boton} onPress={() => this.onSubmit()}>
-                        <Text style={styles.textoCentro}> Buscar </Text> 
-                    </TouchableOpacity>
-
-                    {this.state.error ? <Text style={styles.error}>{this.state.error}</Text> : null}
-                    {this.state.noResultados ? <Text style={styles.error}>{this.state.noResultados}</Text> : null}
 
                     {this.state.resultados.length > 0 ? (
                         <FlatList
@@ -57,7 +54,7 @@ class Users extends Component{
                             keyExtractor= {item=>item.id}
                             renderItem= {({item})=> <User userInfo={item}/>}
                         />
-                    ) :(null)}
+                    ) :(<Text style={styles.error}>El nombre de usuario ingresado no existe.</Text>)}
                 </View>     
             </View>
         );
@@ -87,16 +84,13 @@ content:{
     alignItems: 'center',
     paddingHorizontal: 20
 },
-boton:{
-    backgroundColor:'#A67B5B',
-    width:'50%',
-    borderRadius:10,
-    padding:4,
+titulo:{
+    fontWeight:'bold',
+    lineHeight:40,
+    fontSize:24,
+    marginBottom: 20,
+    color:'#481E14',
     marginTop:20,
-    marginBottom:20
-},
-textoCentro:{
-    textAlign:'center'
 },
 field:{
     width: '100%',
@@ -117,6 +111,10 @@ field:{
     shadowRadius: 3.84,
     elevation: 5,
 },
+error:{
+    color: "red",
+    marginTop:10
+}
 });
 
 export default Users

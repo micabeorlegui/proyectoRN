@@ -7,8 +7,8 @@ const User = ({ userInfo }) => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.userName}>{userName}</Text>
             <Text style={styles.email}>Email: {email}</Text>
-            <Text style={styles.userName}>Usuario: {userName}</Text>
         </View>
     );
 };
@@ -27,13 +27,13 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5
     },
-    email: {
+    userName: {
         fontSize: 16,
         fontWeight: 'bold',
         color: '#333',
         marginBottom:10
     },
-    userName: {
+    email: {
         fontSize: 14,
         color: '#666',
     },
