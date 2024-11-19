@@ -9,7 +9,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 const Tab = createBottomTabNavigator();
 
 const HomeMenu= (props) => {
-    return(
+      return(
         <Tab.Navigator >
         
           <Tab.Screen 

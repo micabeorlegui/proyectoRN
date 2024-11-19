@@ -13,20 +13,43 @@ class Post extends Component {
     };
   }
   componentDidMount() {
-    if (this.props.postInfo.data.likes.includes(auth.currentUser.email)) {
+    if (this.props.postInfo.data && this.props.postInfo.data.likes.includes(auth.currentUser.email)) {
       this.setState(
         { liked: true,
-          cantidadLikes: this.props.postInfo.data.like.length,
+          cantidadLikes: this.props.postInfo.data.likes.length,
          }
       )
     }
   }
   handleLike() {
+    db.collection('posts')
+        .doc(this.props.postInfo.id)
+        .update({
+            likes:firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email)
+        })
+        .then(()=>{
+            this.setState({
+                liked:true,
+                cantidadLikes:this.props.postInfo.data.likes.length
+            })
+        })
+        .catch(error => console.log(error))
+
    
   }
   handleDisLike() {
-    
-
+    db.collection('posts')
+        .doc(this.props.postInfo.id)
+        .update({
+            likes:firebase.firestore.FieldValue.arrayRemove(auth.currentUser.email)
+        })
+        .then(()=>{
+            this.setState({
+                liked:false,
+                cantidadLikes:this.props.postInfo.data.likes.length
+            })
+        })
+        .catch(error => console.log(error))
   }
 
   render() {
@@ -42,15 +65,15 @@ class Post extends Component {
           {new Date(this.props.postInfo.data.createdAt).toLocaleString()}  
         </Text>
         { this.state.liked ? (
-          <TouchableOpacity style={styles.boton} onPress={() => this.handleLike()}> 
+          <TouchableOpacity style={styles.boton} onPress={() => this.handleDisLike()}> 
             <Text style={styles.textoCentro} >Dislike </Text> 
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.boton} onPress={() => this.handleDisLike()}> 
+          <TouchableOpacity style={styles.boton} onPress={() => this.handleLike()}> 
             <Text style={styles.textoCentro}>Like</Text> 
           </TouchableOpacity>
         )}
-        <Text style={styles.textoSecundario}> Cantidad de likes:{ }</Text>
+        <Text style={styles.textoSecundario}> Cantidad de likes: {this.state.cantidadLikes}</Text>
 
       </View>
     );
@@ -83,7 +106,7 @@ const styles = StyleSheet.create({
     },
     boton:{
         backgroundColor:'#A67B5B',
-        width:'20%',
+        width:'25%',
         borderRadius:10,
         padding:4,
         marginTop:20,
