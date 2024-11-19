@@ -10,8 +10,6 @@ class Login extends Component{
         email: "",
         password: "",
         logued: false,
-        errores: [],
-        errores2: [],
         error:''
        }
    }
@@ -25,35 +23,11 @@ class Login extends Component{
   }
 
    handleSubmit() { 
-        let errores= []
-
-        if (this.state.email==='' || this.state.password==='' ) {
-            errores.push('Todos los campos deben ser completados.')
-        }
-
-        if (!this.state.email.includes("@")) {
-            errores.push("Atención. Recorda que un email debe incluir '@'.");
-        }
-
-        this.setState({ errores });
-
-        db.collection('users').where('email', '==', this.state.email).onSnapshot(
-            docs => {
-                if (docs.empty) {
-                    this.setState({ errores2: "El email no está registrado. Por favor, regístrate."});
-                }
-                
-                if(!docs.empty && docs.password !== this.state.password) {
-                    this.setState({ errores2: "La contraseña es incorrecta."});
-                }
-            }
-        )
-
         auth
         .signInWithEmailAndPassword(this.state.email, this.state.password)
         .then((response) => this.setState({ logued: true,  errores: [] }))
         .then( ()=>  this.props.navigation.navigate("HomeMenu"))
-        .catch((error) => this.setState({ error: "Fallo el login" }));    
+        .catch((error) => this.setState({ error: "Email o contraseña incorrecta. Vuelve a intentarlo." }));    
     }
   
    render () {
@@ -73,23 +47,13 @@ class Login extends Component{
 
                 <TextInput
                     style={styles.field} 
-                    placeholder="Ingrese su contrasena"
+                    placeholder="Ingrese su contraseña"
                     secureTextEntry={true}
                     onChangeText={(text) => this.setState({ password: text })}
                     value={this.state.password}
                 />
 
-                {this.state.errores.length > 0 ? (
-                    <View>{this.state.errores.map((error, index) => (
-                        <Text key={index} style={styles.error}>{error}</Text>))}
-                    </View>
-                ) : (null) }
-
-                {this.state.errores2.length > 0 ? (
-                    <Text style={styles.error}>{this.state.errores2}</Text>
-                ) : (null) }
-
-                {!this.state.error==='' ? (<Text style={styles.error}>{this.state.error}</Text>):(null)}
+                {this.state.error ? (<Text style={styles.error}>{this.state.error}</Text>):(null)}
 
                 <TouchableOpacity onPress={() => this.handleSubmit() }  style={styles.botonLogin}>
                     <Text style={styles.textoCentro}>Acceder</Text>
