@@ -79,41 +79,41 @@ class Post extends Component {
     );
   }
 }
-
 const styles = StyleSheet.create({
-    container:{
-        backgroundColor: "#fff",
-        padding: 15,
-        marginVertical: 8,
-        shadowColor:"#000",
-        shadowOffset:{
-            width:0,
-            height:2
-        },
-        shadowOpacity:0.25,
-        shadowRadius: 3.84,
-        elevation: 5
+    container: {
+        backgroundColor: "#FAF3E0", 
+        padding: 10, 
+        marginVertical: 10, 
+        borderRadius: 12, 
+        shadowColor: "#000",
+       
+        shadowOpacity: 0.15, 
+        shadowRadius: 6, 
+        elevation: 5,
     },
     textoPrincipal: {
-        fontSize: 16,
+        fontSize: 18, 
         fontWeight: 'bold',
-        color: '#333',
-        marginBottom:10
+        color: '#4E342E', 
+        marginBottom: 12, 
     },
     textoSecundario: {
-        fontSize: 14,
-        color: '#666',
+        fontSize: 15, 
+        color: '#7B5B3A', 
     },
-    boton:{
-        backgroundColor:'#A67B5B',
-        width:'25%',
-        borderRadius:10,
-        padding:4,
-        marginTop:20,
-        marginBottom:15
+    boton: {
+        backgroundColor: '#A67B5B', 
+        width: '30%', 
+        borderRadius: 12,
+        paddingVertical: 8, 
+        marginTop: 25, 
+        marginBottom: 20,
+        alignItems: 'center', 
     },
-    textoCentro:{
-        textAlign:'center'
+    textoCentro: {
+        textAlign: 'center',
+        color: '#FFFFFF', 
+        fontWeight: 'bold', 
     },
 });
 
