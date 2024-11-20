@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-
 const User = ({ userInfo }) => {
     const { email, userName } = userInfo.data;
 
@@ -15,22 +14,19 @@ const User = ({ userInfo }) => {
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor: "#fff",
-        padding: 15,
-        marginVertical: 8,
-        shadowColor:"#000",
-        shadowOffset:{
-            width:0,
-            height:2
-        },
-        shadowOpacity:0.25,
-        shadowRadius: 3.84,
-        elevation: 5
+        backgroundColor: "#FFF8E8", 
+        padding: 10, 
+        marginVertical: 10, 
+        borderRadius: 12, 
+        shadowColor: "#000",
+        shadowOpacity: 0.15, 
+        shadowRadius: 6, 
+        elevation: 5,
     },
     userName: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#333',
+        color: '#4E342E',
         marginBottom:10
     },
     email: {

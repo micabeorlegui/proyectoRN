@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import firebase from "firebase";
 import { db, auth } from '../firebase/config'
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 class Post extends Component {
   constructor(props) {
@@ -12,6 +13,7 @@ class Post extends Component {
 
     };
   }
+
   componentDidMount() {
     if (this.props.postInfo.data && this.props.postInfo.data.likes.includes(auth.currentUser.email)) {
       this.setState(
@@ -21,6 +23,7 @@ class Post extends Component {
       )
     }
   }
+
   handleLike() {
     db.collection('posts')
         .doc(this.props.postInfo.id)
@@ -34,9 +37,8 @@ class Post extends Component {
             })
         })
         .catch(error => console.log(error))
-
-   
   }
+
   handleDisLike() {
     db.collection('posts')
         .doc(this.props.postInfo.id)
@@ -54,39 +56,34 @@ class Post extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.textoPrincipal}>
-          Publicado por: {this.props.postInfo.data.owner}
-        </Text>
-        <Text style={styles.textoSecundario}>
-          Descripción: {this.props.postInfo.data.mensaje}  
-        </Text>
-        <Text style={styles.textoSecundario}>
-          {new Date(this.props.postInfo.data.createdAt).toLocaleString()}  
-        </Text>
-        { this.state.liked ? (
-          <TouchableOpacity style={styles.boton} onPress={() => this.handleDisLike()}> 
-            <Text style={styles.textoCentro} >Dislike </Text> 
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.boton} onPress={() => this.handleLike()}> 
-            <Text style={styles.textoCentro}>Like</Text> 
-          </TouchableOpacity>
-        )}
-        <Text style={styles.textoSecundario}> Cantidad de likes: {this.state.cantidadLikes}</Text>
+        <View style={styles.container}>
+            <Text style={styles.textoPrincipal}>Publicado por: {this.props.postInfo.data.owner}</Text>
+            <Text style={styles.textoSecundario}>Descripción: {this.props.postInfo.data.mensaje}</Text>
+            <Text style={[styles.textoSecundario, { marginTop: 20 }]}>{new Date(this.props.postInfo.data.createdAt).toLocaleString()}</Text>
 
+            { this.state.liked ? (
+            <TouchableOpacity style={styles.boton} onPress={() => this.handleDisLike()}> 
+                <Text style={styles.textoCentro}>Dislike  <AntDesign name="heart" size={14} color="FFFFFF" /></Text> 
+            </TouchableOpacity>
+            ) : (
+            <TouchableOpacity style={styles.boton} onPress={() => this.handleLike()}> 
+                <Text style={styles.textoCentro}>Like  <AntDesign name="hearto" size={14} color="#FFFFFF" /></Text> 
+            </TouchableOpacity>
+            )}
+
+            <Text style={styles.textoSecundario}>Cantidad de likes: {this.state.cantidadLikes}</Text>
       </View>
     );
   }
 }
+
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#FAF3E0", 
+        backgroundColor: "#FFF8E8", 
         padding: 10, 
         marginVertical: 10, 
         borderRadius: 12, 
         shadowColor: "#000",
-       
         shadowOpacity: 0.15, 
         shadowRadius: 6, 
         elevation: 5,

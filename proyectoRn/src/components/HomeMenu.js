@@ -15,24 +15,24 @@ const HomeMenu= (props) => {
           <Tab.Screen 
             name="Home" 
             component={Home}
-            options={{tabBarIcon: () => <FontAwesome name="home" size={24} color="black" />, headerShown:false}}
+            options={{tabBarIcon: () => <FontAwesome name="home" size={24} color="#481E14" />, headerShown:false}}
           />
 
           <Tab.Screen  
             name="NewPost" 
             component={NewPost} 
-            options={{tabBarIcon: () => <MaterialIcons name="post-add" size={24} color="black" />, headerShown:false}}
+            options={{tabBarIcon: () => <MaterialIcons name="post-add" size={24} color="#481E14" />, headerShown:false}}
           />
 
           <Tab.Screen  
             name="Profile" 
             component={Profile} 
-            options={{tabBarIcon: () => <MaterialIcons name="account-circle" size={24} color="black" />, headerShown: false }}
+            options={{tabBarIcon: () => <MaterialIcons name="account-circle" size={24} color="#481E14" />, headerShown: false }}
           />
           <Tab.Screen
             name="Usuarios" 
             component={Users} 
-            options={{tabBarIcon: () => <FontAwesome name="users" size={24} color="black" />, headerShown:false}}
+            options={{tabBarIcon: () => <FontAwesome name="users" size={24} color="#481E14" />, headerShown:false}}
           />
         
       </Tab.Navigator>

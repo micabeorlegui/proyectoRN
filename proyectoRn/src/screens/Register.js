@@ -12,7 +12,7 @@ class Register extends Component{
             password:'',
             registered: false,
             error:'',
-            errores:[]
+            errores:[],
        }
    }
 
@@ -39,7 +39,7 @@ class Register extends Component{
             errores.push("La contraseña debe tener al menos 6 caracteres.");
         }
 
-        this.setState({ errores: errores });
+        this.setState({ errores });
 
         auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
             .then(response=>{
@@ -54,7 +54,7 @@ class Register extends Component{
             })
             .then(()=> this.props.navigation.navigate('Login'))
             .catch(error=>{
-                this.setState({error:'Fallo en el regitro.'})
+                this.setState({error:'Fallo en el regsitro.'})
             })
     }
 
@@ -90,7 +90,7 @@ class Register extends Component{
                     </View>
                 ) : (null) }
 
-                {!this.state.error==='' ? (<Text style={styles.error}>{this.state.error}</Text>):(null)}
+                {this.state.error ? (<Text style={styles.error}>{this.state.error}</Text>):(null)}
 
                 <TouchableOpacity style={styles.botonRegistro} onPress={() => this.onSubmit()}>
                     <Text style={styles.textoCentro}> Registrar </Text> 
