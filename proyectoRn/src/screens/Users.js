@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, FlatList, Image} from 'react-native';
+import { Text, View, StyleSheet, TextInput, FlatList, Image} from 'react-native';
 import {db, auth} from '../firebase/config';
 import User from "../components/User";
-
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 class Users extends Component{
    constructor(){
@@ -41,7 +41,7 @@ class Users extends Component{
             <View style={styles.container}>
                 <Image source={require('../../assets/img/background.jpeg')} style={styles.backgroundImage}/>
                 <View style={styles.content}>
-                    <Text style={styles.titulo}>Filtrado de usuarios</Text>
+                    <Text style={styles.titulo}>Filtrado de usuarios  <FontAwesome name="filter" size={24} color="#481E14" /></Text>
 
                     <TextInput style={styles.field} 
                         placeholder='Filtrar por nombre de usuario...'
@@ -98,7 +98,7 @@ field:{
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
-    marginBottom: 15,
+    marginBottom: 30,
     paddingLeft: 15,
     backgroundColor: '#FBFBFB',
     fontSize: 14,

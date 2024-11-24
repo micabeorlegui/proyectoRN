@@ -75,7 +75,9 @@ const styles = StyleSheet.create({
         marginTop:20
     },
     textoCentro:{
-        textAlign:'center'
+        textAlign:'center',
+        color:'#FFFFFF',
+        fontWeight:'bold',
     }
   });
 export default Profile

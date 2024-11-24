@@ -67,8 +67,6 @@ class Login extends Component{
         </View>
        )
    }
-
-
 }
 
 const styles = StyleSheet.create({
@@ -115,7 +113,7 @@ const styles = StyleSheet.create({
         marginTop:20
     },
     textoCentro:{
-        textAlign:'center'
+        textAlign:'center',
     },
     field:{
         width: '100%',
