@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, Image} from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import {db, auth} from '../firebase/config';
 
 
@@ -11,8 +11,7 @@ class Register extends Component{
             username:'',
             password:'',
             registered: false,
-            error:'',
-            errores:[]
+            error:''
        }
    }
 
@@ -22,84 +21,76 @@ class Register extends Component{
             this.props.navigation.navigate('HomeMenu') 
         }
     })
-    }
+}
 
-    onSubmit(){
-        let errores= []
+onSubmit(){
 
-        if (this.state.email==='' || this.state.password==='' || this.state.username==='' ) {
-            errores.push('Todos los campos deben ser completados.')
-        }
+    auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
+        .then(response=>{
+            if (this.state.email==='' || this.state.password==='' || this.state.username==='' ) {
+                this.setState({error: 'Todos los campos deben ser completados.'})
+                console.log(this.state.error)
+                return
+            }
+            
+            if (!this.state.email.includes('@')) {
+                this.setState({error: 'Email mal formateado'})
+                console.log(this.state.error)
+                return
+            }
+        
+            if (this.state.password.length<6) {
+                this.setState({error: 'La password debe tener una longitud mínima de 6 caracteres'})
+                console.log(this.state.error)
+                return
+            }
 
-        if (!this.state.email.includes("@")) {
-            errores.push("El email debe contener un '@'.");
-        }
+            this.setState({registered: true})
 
-        if (this.state.password.length<6) {
-            errores.push("La contraseña debe tener al menos 6 caracteres.");
-        }
-
-        this.setState({ errores: errores });
-
-        auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
-            .then(response=>{
-                this.setState({registered: true})
-
-                db.collection('users').add({
-                    owner: auth.currentUser.email,
-                    email: this.state.email,
-                    userName:this.state.username,
-                    createdAt: Date.now()
-                })
+            db.collection('users').add({
+                owner: auth.currentUser.email,
+                email: this.state.email,
+                userName:this.state.username,
+                createdAt: Date.now()
             })
-            .then(()=> this.props.navigation.navigate('Login'))
-            .catch(error=>{
-                this.setState({error:'Fallo en el regitro.'})
-            })
-    }
+        })
+        .then(()=> this.props.navigation.navigate('Login'))
+        .catch(error=>{
+            this.setState({error:'Fallo en el regitro.'})
+        })
+}
 
    render () {
        return(
         <View style={styles.container}>
-            <Image source={require('../../assets/img/background.jpeg')} style={styles.backgroundImage}/>
-            <View style={styles.content}>
-                <Text style={styles.register}>Registro</Text>
+            <Text style={styles.register}>Registro</Text>
 
-                <TextInput style={styles.field} 
-                    keyboardType='email-address'
-                    placeholder='Ingrese su email'
-                    onChangeText={ text => this.setState({email:text}) }
-                    value={this.state.email} />
+            <TextInput style={styles.field} 
+                keyboardType='email-address'
+                placeholder='Ingrese su email'
+                onChangeText={ text => this.setState({email:text}) }
+                value={this.state.email} />
 
-                <TextInput style={styles.field} 
-                    keyboardType='default'
-                    placeholder='Ingrese su nombre de usuario'
-                    onChangeText={ text => this.setState({username:text}) }
-                    value={this.state.username} />
+            <TextInput style={styles.field} 
+                keyboardType='default'
+                placeholder='Ingrese su nombre de usuario'
+                onChangeText={ text => this.setState({username:text}) }
+                value={this.state.username} />
 
-                <TextInput style={styles.field} 
-                    keyboardType='default'
-                    placeholder='Ingrese su contraseña'
-                    secureTextEntry={true} 
-                    onChangeText={ text => this.setState({password:text}) }
-                    value={this.state.password}/> 
+            <TextInput style={styles.field} 
+                keyboardType='default'
+                placeholder='Ingrese su contraseña'
+                secureTextEntry={true} 
+                onChangeText={ text => this.setState({password:text}) }
+                value={this.state.password}/> 
 
-                {this.state.errores.length > 0 ? (
-                    <View>{this.state.errores.map((error, index) => (
-                        <Text key={index} style={styles.error}>{error}</Text>))}
-                    </View>
-                ) : (null) }
+            <TouchableOpacity style={styles.botonRegistro} onPress={() => this.onSubmit()}>
+                <Text style={styles.textoCentro}> Registrar </Text> 
+            </TouchableOpacity> 
 
-                {!this.state.error==='' ? (<Text style={styles.error}>{this.state.error}</Text>):(null)}
-
-                <TouchableOpacity style={styles.botonRegistro} onPress={() => this.onSubmit()}>
-                    <Text style={styles.textoCentro}> Registrar </Text> 
-                </TouchableOpacity> 
-
-                <TouchableOpacity style={styles.yaTengoCuenta} onPress={ ()=> this.props.navigation.navigate('Login')}>
-                    <Text style={styles.textoCentro}>Ya tengo cuenta</Text>
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.ingresar} onPress={ ()=> this.props.navigation.navigate('Login')}>
+                <Text style={styles.textoCentro}>Ya tengo cuenta</Text>
+            </TouchableOpacity>
         </View>
        )
    }
@@ -113,69 +104,32 @@ const styles = StyleSheet.create({
       flex: 1,
       padding: 20
     },
-    backgroundImage:{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        width: '100%',
-        height: '100%',
-        resizeMode: 'cover',
-    },
-    content:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 20
-    },
     register:{
         fontWeight:'bold',
         lineHeight:40,
-        fontSize:24,
-        marginBottom: 25,
-        color:'#481E14'
+        fontSize:20
+    },
+    ingresar:{
+        backgroundColor:'rgb(255,165,0)',
+        padding:8,
+        marginBottom:10,
+        marginTop:10,
+        borderRadius:10
     },
     botonRegistro:{
-        backgroundColor:'#A67B5B',
-        width:'50%',
+        backgroundColor:'rgb(155,155,155)',
+        width:'25%',
         borderRadius:10,
-        padding:4,
-        marginTop:20
-    },
-    yaTengoCuenta:{
-        backgroundColor:'#B99470',
-        width:'60%',
-        borderRadius:10,
-        padding:4,
-        marginTop:20
+        paddin:5
     },
     textoCentro:{
         textAlign:'center'
     },
     field:{
-        width: '100%',
-        height: 35,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 10,
-        marginBottom: 15,
-        paddingLeft: 15,
-        backgroundColor: '#FBFBFB',
-        fontSize: 14,
-        shadowColor:"#000",
-        shadowOffset:{
-            width:0,
-            height:2
-        },
-        shadowOpacity:0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    error: {
-        color: "red",
-        marginBottom: 10,
-        textAlign: "center",
+        borderWidth:1,
+        borderColor:'rgb(155,155,155)',
+        marginBottom:10,
+        paddingLeft:10
     }
   });
 
