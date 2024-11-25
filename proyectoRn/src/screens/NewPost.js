@@ -3,7 +3,6 @@ import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from 'reac
 import { db, auth } from '../firebase/config';
 import firebase from 'firebase';
 
-
 class NewPost extends Component{
     constructor(props){
         super(props)
