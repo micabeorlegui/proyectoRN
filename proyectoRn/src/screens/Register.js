@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, Image} from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, Image, ActivityIndicator} from 'react-native';
 import {db, auth} from '../firebase/config';
-
 
 class Register extends Component{
    constructor(){
@@ -13,49 +12,59 @@ class Register extends Component{
             registered: false,
             error:'',
             errores:[],
+            loading: false
        }
    }
-
    componentDidMount(){
     auth.onAuthStateChanged(user=>{
         if (user) {
             this.props.navigation.navigate('HomeMenu') 
         }
     })
-    }
+   }
+   chequearCampos() {
+        let errores = []
 
-    onSubmit(){
-        let errores= []
-
-        if (this.state.email==='' || this.state.password==='' || this.state.username==='' ) {
+        if (this.state.email === '' || this.state.password === '' || this.state.username === '') {
             errores.push('Todos los campos deben ser completados.')
         }
 
-        if (!this.state.email.includes("@")) {
+        if (this.state.email && !this.state.email.includes("@")) {
             errores.push("El email debe contener un '@'.");
         }
 
-        if (this.state.password.length<6) {
+        if (this.state.password && this.state.password.length < 6) {
             errores.push("La contraseña debe tener al menos 6 caracteres.");
         }
 
         this.setState({ errores });
+        return errores.length === 0;
+    }
+    onSubmit(){
+        if(this.chequearCampos()) {
+            this.setState({ loading: true });
+            auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
+                .then(response=>{
+                    this.setState({registered: true})
 
-        auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
-            .then(response=>{
-                this.setState({registered: true})
-
-                db.collection('users').add({
-                    owner: auth.currentUser.email,
-                    email: this.state.email,
-                    userName:this.state.username,
-                    createdAt: Date.now()
+                    db.collection('users').add({
+                        owner: auth.currentUser.email,
+                        email: this.state.email,
+                        userName:this.state.username,
+                        createdAt: Date.now()
+                    })
                 })
-            })
-            .then(()=> this.props.navigation.navigate('Login'))
-            .catch(error=>{
-                this.setState({error:'Fallo en el regsitro.'})
-            })
+                .then(()=> {
+                    this.setState({ loading: false });
+                    this.props.navigation.navigate('Login')
+                })
+                .catch(error=>{
+                    this.setState({
+                        error:'Fallo en el registro.',
+                        loading: false
+                    })
+                })
+        }
     }
 
    render () {
@@ -64,37 +73,53 @@ class Register extends Component{
             <Image source={require('../../assets/img/background.jpeg')} style={styles.backgroundImage}/>
             <View style={styles.content}>
                 <Text style={styles.register}>Registro</Text>
-
                 <TextInput style={styles.field} 
                     keyboardType='email-address'
                     placeholder='Ingrese su email'
-                    onChangeText={ text => this.setState({email:text}) }
+                    onChangeText={ text => {
+                        this.setState({email: text}, () => this.chequearCampos())
+                    }}
                     value={this.state.email} />
 
                 <TextInput style={styles.field} 
                     keyboardType='default'
                     placeholder='Ingrese su nombre de usuario'
-                    onChangeText={ text => this.setState({username:text}) }
+                    onChangeText={ text => {
+                        this.setState({username: text}, () => this.chequearCampos())
+                    }}
                     value={this.state.username} />
 
                 <TextInput style={styles.field} 
                     keyboardType='default'
                     placeholder='Ingrese su contraseña'
                     secureTextEntry={true} 
-                    onChangeText={ text => this.setState({password:text}) }
+                    onChangeText={ text => {
+                        this.setState({password: text}, () => this.chequearCampos())
+                    }}
                     value={this.state.password}/> 
 
                 {this.state.errores.length > 0 ? (
                     <View>{this.state.errores.map((error, index) => (
                         <Text key={index} style={styles.error}>{error}</Text>))}
                     </View>
-                ) : (null) }
+                ) : null}
 
-                {this.state.error ? (<Text style={styles.error}>{this.state.error}</Text>):(null)}
+                {this.state.error ? <Text style={styles.error}>{this.state.error}</Text> : null}
 
-                <TouchableOpacity style={styles.botonRegistro} onPress={() => this.onSubmit()}>
-                    <Text style={styles.textoCentro}> Registrar </Text> 
-                </TouchableOpacity> 
+                <TouchableOpacity 
+                    style={[
+                        styles.botonRegistro,
+                        (this.state.errores.length > 0 || !this.state.email || !this.state.password || !this.state.username) && styles.botonDeshabilitado
+                    ]} 
+                    onPress={() => this.onSubmit()}
+                    disabled={this.state.errores.length > 0 || !this.state.email || !this.state.password || !this.state.username || this.state.loading}
+                >
+                    {this.state.loading ? (
+                        <ActivityIndicator size='large' color="white" />
+                    ) : (
+                        <Text style={styles.textoCentro}>Registrar</Text>
+                    )}
+                </TouchableOpacity>
 
                 <TouchableOpacity style={styles.yaTengoCuenta} onPress={ ()=> this.props.navigation.navigate('Login')}>
                     <Text style={styles.textoCentro}>Ya tengo cuenta</Text>
@@ -103,8 +128,6 @@ class Register extends Component{
         </View>
        )
    }
-
-
 }
 
 const styles = StyleSheet.create({
@@ -143,6 +166,10 @@ const styles = StyleSheet.create({
         padding:4,
         marginTop:20
     },
+    botonDeshabilitado: {
+        backgroundColor: '#cccccc',
+        opacity: 0.7
+    },
     yaTengoCuenta:{
         backgroundColor:'#B99470',
         width:'60%',
@@ -151,7 +178,9 @@ const styles = StyleSheet.create({
         marginTop:20
     },
     textoCentro:{
-        textAlign:'center'
+        textAlign:'center',
+        color: '#FFFFFF',
+        fontWeight: 'bold'
     },
     field:{
         width: '100%',
@@ -177,6 +206,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         textAlign: "center",
     }
-  });
+});
 
-export default Register
+export default Register;
