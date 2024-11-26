@@ -15,6 +15,7 @@ class Register extends Component{
             loading: false
        }
    }
+
    componentDidMount(){
     auth.onAuthStateChanged(user=>{
         if (user) {
@@ -22,6 +23,7 @@ class Register extends Component{
         }
     })
    }
+
    chequearCampos() {
         let errores = []
 
@@ -40,6 +42,7 @@ class Register extends Component{
         this.setState({ errores });
         return errores.length === 0;
     }
+
     onSubmit(){
         if(this.chequearCampos()) {
             this.setState({ loading: true });
@@ -115,7 +118,7 @@ class Register extends Component{
                     disabled={this.state.errores.length > 0 || !this.state.email || !this.state.password || !this.state.username || this.state.loading}
                 >
                     {this.state.loading ? (
-                        <ActivityIndicator size='large' color="white" />
+                        <ActivityIndicator size='small' color="white" />
                     ) : (
                         <Text style={styles.textoCentro}>Registrar</Text>
                     )}

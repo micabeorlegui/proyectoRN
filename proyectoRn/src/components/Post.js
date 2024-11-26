@@ -10,7 +10,6 @@ class Post extends Component {
     this.state = {
       liked: false,
       cantidadLikes: this.props.postInfo.data.likes.length
-
     };
   }
 
@@ -19,7 +18,7 @@ class Post extends Component {
       this.setState(
         { liked: true,
           cantidadLikes: this.props.postInfo.data.likes.length,
-         }
+        }
       )
     }
   }

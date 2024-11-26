@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, Image, SafeAreaView, FlatList } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, Image, FlatList } from 'react-native';
 import { db, auth } from '../firebase/config';
 import Post from '../components/Post';
 
@@ -49,7 +49,7 @@ class Profile extends Component {
                     this.setState({
                         users: arrayUsers
                     })
-                })
+            })
         }
     }
 
@@ -80,7 +80,7 @@ class Profile extends Component {
               <View style={styles.content}>
                   {user && (
                       <>
-                          <Text style={styles.home}>{user.userName}</Text>
+                          <Text style={styles.titulo}>{user.userName}</Text>
                           <Image
                               source={{ uri: "https://thumbs.dreamstime.com/b/l%C3%ADnea-icono-del-negro-avatar-perfil-de-usuario-121102131.jpg" }}
                               style={styles.imgPerfil}
@@ -93,7 +93,7 @@ class Profile extends Component {
                           >
                               <Text style={styles.buttonText}>Cerrar Sesión</Text>
                           </TouchableOpacity>
-                          <Text style={styles.home}>Tus posteos: {this.state.posteos.length}</Text>
+                          <Text style={styles.titulo}>Tus posteos: {this.state.posteos.length}</Text>
                       </>
                   )}
                   {this.state.posteos.length === 0 ? (
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       paddingHorizontal: 20
   },
-  home:{
+  titulo:{
       fontWeight:'bold',
       fontSize:24,
       marginTop:20,
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   user:{
       fontSize:15,
       marginBottom: 25,
-      marginTop:20,
+      marginTop:10,
       color:'#481E14'
   },
   imgPerfil: {
@@ -165,9 +165,9 @@ const styles = StyleSheet.create({
       borderColor: '#481E14'
   },
   button: {
-      backgroundColor: '#481E14',
+      backgroundColor: '#6C4E31',
       padding: 10,
-      borderRadius: 5,
+      borderRadius: 7,
       marginTop: 10,
       alignItems: 'center',
       width: '50%',

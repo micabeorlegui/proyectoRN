@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, Image} from 'react-native';
-import {db, auth} from '../firebase/config';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, Image, ActivityIndicator} from 'react-native';
+import { auth} from '../firebase/config';
 
 
 class Login extends Component{
@@ -10,7 +10,8 @@ class Login extends Component{
         email: "",
         password: "",
         logued: false,
-        error:''
+        error:'',
+        loading: false
        }
    }
 
@@ -23,11 +24,14 @@ class Login extends Component{
   }
 
    handleSubmit() { 
-        auth
-        .signInWithEmailAndPassword(this.state.email, this.state.password)
-        .then((response) => this.setState({ logued: true,  errores: [] }))
-        .then( ()=>  this.props.navigation.navigate("HomeMenu"))
-        .catch((error) => this.setState({ error: "Email o contraseña incorrecta. Vuelve a intentarlo." }));    
+        this.setState({ loading: true });
+        auth.signInWithEmailAndPassword(this.state.email, this.state.password)
+            .then((response) => this.setState({ logued: true,  errores: [] }))
+            .then(()=> {
+                this.setState({ loading: false });
+                this.props.navigation.navigate('HomeMenu')
+            })
+            .catch((error) => this.setState({ error: "Email o contraseña incorrecta. Vuelve a intentarlo.", loading: false }));    
     }
   
    render () {
@@ -56,7 +60,11 @@ class Login extends Component{
                 {this.state.error ? (<Text style={styles.error}>{this.state.error}</Text>):(null)}
 
                 <TouchableOpacity onPress={() => this.handleSubmit() }  style={styles.botonLogin}>
-                    <Text style={styles.textoCentro}>Acceder</Text>
+                    {this.state.loading ? (
+                        <ActivityIndicator size='small' color="white" />
+                    ) : (
+                        <Text style={styles.textoCentro}>Acceder</Text>
+                    )}
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => this.props.navigation.navigate("Register")} style={styles.noTengoCuenta}>
@@ -114,6 +122,8 @@ const styles = StyleSheet.create({
     },
     textoCentro:{
         textAlign:'center',
+        color: '#FFFFFF',
+        fontWeight: 'bold'
     },
     field:{
         width: '100%',

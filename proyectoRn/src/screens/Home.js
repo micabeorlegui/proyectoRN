@@ -10,46 +10,46 @@ class Home extends Component{
        this.state={
             posts:[]
        }
-   }
+    }
 
    componentDidMount(){
-    db.collection("posts").orderBy('createdAt', 'desc').onSnapshot(
-        docs => {
-            let arrDocs= []
-            docs.forEach(doc=>{
-                arrDocs.push({
-                    id: doc.id,
-                    data: doc.data()
+        db.collection("posts").orderBy('createdAt', 'desc').onSnapshot(
+            docs => {
+                let arrDocs= []
+                docs.forEach(doc=>{
+                    arrDocs.push({
+                        id: doc.id,
+                        data: doc.data()
+                    })
                 })
-            })
-            this.setState({
-                posts: arrDocs
-            }, console.log("Posteos en el home: ",JSON.stringify(this.state.posts, null, 4)))
-        }
-    )
+                this.setState({
+                    posts: arrDocs
+                }, console.log("Posteos en el home: ",JSON.stringify(this.state.posts, null, 4)))
+            }
+        )
     }
 
    render () {
        return(
-        <View style={styles.container}>
-            <Image source={require('../../assets/img/background.jpeg')} style={styles.backgroundImage}/>
-            <View style={styles.content}>
-                <Text style={styles.home}>Home</Text>
-                <Text style={styles.user}>Bienvenido {auth.currentUser.email}</Text>
-                
-                {
-                    this.state.posts.length === 0 ? (
-                        <Text>No hay posts aún.</Text>
-                    ) : (
-                        <FlatList
-                            data= {this.state.posts}
-                            keyExtractor= {item=>item.id}
-                            renderItem = {({item})=> <Post postInfo={item}/>}
-                        />
-                    )
-                }
+            <View style={styles.container}>
+                <Image source={require('../../assets/img/background.jpeg')} style={styles.backgroundImage}/>
+                <View style={styles.content}>
+                    <Text style={styles.home}>Home</Text>
+                    <Text style={styles.user}>Bienvenido {auth.currentUser.email}</Text>
+                    
+                    {
+                        this.state.posts.length === 0 ? (
+                            <Text>No hay posts aún.</Text>
+                        ) : (
+                            <FlatList
+                                data= {this.state.posts}
+                                keyExtractor= {item=>item.id}
+                                renderItem = {({item})=> <Post postInfo={item}/>}
+                            />
+                        )
+                    }
+                </View>
             </View>
-    </View>
        )
    }
 

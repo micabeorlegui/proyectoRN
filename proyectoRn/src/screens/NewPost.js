@@ -1,23 +1,20 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native-web'
+import { Text, View, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native-web'
 import { db, auth } from '../firebase/config';
-import firebase from 'firebase';
 
 class NewPost extends Component{
     constructor(props){
         super(props)
         this.state= {
           mensaje:"",
-          errores: []
+          error: ""
         }
     }  
 
-    crearPosteo(mensaje,likes ) {
-        let errores= []
-        if(mensaje ===""){
-            errores.push('No podes crear postes vacios')
-            this.setState({ errores });
-            return
+    crearPosteo(mensaje) {
+        if(mensaje === ""){
+            this.setState({ error:"No podes crear posteos vacíos." });
+            return;
         }else{
             db.collection('posts').add({
                 owner: auth.currentUser.email,
@@ -27,7 +24,6 @@ class NewPost extends Component{
             })
             .then( this.props.navigation.navigate("Home"))
             .catch(err => console.log(err))
-
         }   
     }
     
@@ -43,22 +39,19 @@ class NewPost extends Component{
                     placeholder='Escribir...'
                     onChangeText={ (text) => this.setState({mensaje:text}) }
                     value={this.state.mensaje} />
+
+                <Text style={styles.error}>{this.state.error}</Text>
                 
                 <TouchableOpacity style={styles.boton} onPress={() => this.crearPosteo(this.state.mensaje)}>
                     <Text style={styles.textoCentro}>Crear posteo</Text>
                 </TouchableOpacity>
-
-                {this.state.errores.length > 0 ? (
-                    <View>{this.state.errores.map((error, index) => (
-                        <Text key={index} style={styles.error}>{error}</Text>))}
-                    </View>
-                ) : (null) }
 
              </View>
           </View>
         )
     }
 }
+
 const styles = StyleSheet.create({
     container: {
       width:'100%',
@@ -121,8 +114,10 @@ const styles = StyleSheet.create({
     },
     error: {
         color: "red",
-        marginBottom: 10,
+        marginTop: 5,
+        marginBottom: 5,
         textAlign: "center",
     }
 });
+
 export default NewPost
